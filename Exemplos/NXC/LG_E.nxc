@@ -1,0 +1,39 @@
+// LG_E
+#define perto 35 //cm
+#define motorDireita OUT_A
+#define motorEsquerda OUT_C
+#define sensorE SensorUS(IN_1)
+#define sensorD SensorUS(IN_3)
+#define sensorM SensorUS(IN_2)
+
+//
+// Direita AB 3
+// Esquerda C 1
+//
+
+task main() {
+  SetSensorLowspeed(IN_1);
+  SetSensorLowspeed(IN_2);
+  SetSensorLowspeed(IN_3);
+  Wait(4700);
+  while (true) {
+   if (sensorE < perto && sensorD < perto)
+   {
+    OnRev(OUT_AB,100);
+    OnRev(OUT_C,100);
+    Wait(40);
+   }
+   else if ( sensorE > perto && sensorD < perto)
+   {
+    OnFwd(OUT_AB,75);
+    OnRev(OUT_C,75);
+    Wait(40);
+    }
+   else
+   {
+    OnRev(OUT_AB,75);
+    OnFwd(OUT_C,75);
+    Wait(40);
+    }
+}
+}
