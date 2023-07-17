@@ -1,0 +1,110 @@
+#define debug 0
+
+#define motorDireita OUT_A
+#define motorEsquerda OUT_B
+#define motores OUT_AB
+#define motorRampa OUT_C
+#define sensorE IN_4
+#define sensorD IN_3
+
+#define perto 18      // distancia em cm para ativar rampa
+#define longe 40      // distancia maxima para busca rapida, valores maiores que o definido aqui farão com que o robo busque lentamente
+#define velBusca -20  // velocidade para busca quando longe
+#define velCurva -50
+#define velReta -100
+#define tempoBusca 1900   // tempo em ms para trocar de lado de busca quando longe
+#define tempoRampa 2000   // tempo em ms que o robo deve ficar perto para ativar a rampa
+#define rampaAbaixada 90  // graus que a rampa movimenta no inicio
+#define movimentoRampa 30
+#define forcaRampa 25  // força constante para manter a rampa abaixada
+
+#define proximoDe(valor, valor_referencia, margem) (abs((valor) - (valor_referencia)) <= (margem))
+#define moverReto(velocidade) OnFwd(motores, velocidade)
+
+char ladoBusca = 0,
+     ficouPerto = 0;
+unsigned char distanciaE, distanciaD;
+unsigned long ultimaTrocaLado = 0,
+              ultimoCheckRampa = 0,
+              tempoAtual = 0;
+
+void girarDireita(char _vel);
+void girarEsquerda(char _vel);
+
+task main() {
+    SetSensorLowspeed(sensorE);
+    SetSensorLowspeed(sensorD);
+
+#if debug == 0
+
+    Wait(4700);
+    RotateMotor(motorRampa, 100, rampaAbaixada);
+    OnFwd(motorRampa, forcaRampa);
+
+    for (;;) {
+        distanciaE = SensorUS(sensorE);
+        distanciaD = SensorUS(sensorD);
+        tempoAtual = CurrentTick();
+
+        // movimentação
+        if ((distanciaE < longe) || (distanciaD < longe)) {  // busca rapida (perto)
+            if (proximoDe(distanciaE, distanciaD, 5)) {
+                moverReto(velReta);
+            } else if (distanciaE < distanciaD) {
+                girarEsquerda(velCurva);
+            } else {
+                girarDireita(velCurva);
+            }
+
+        } else {  // busca lenta (longe)
+            if (ladoBusca) {
+                girarEsquerda(velBusca);
+            } else {
+                girarDireita(velBusca);
+            }
+            if ((tempoAtual - ultimaTrocaLado) > tempoBusca) {
+                ladoBusca = !ladoBusca;
+                ultimaTrocaLado = tempoAtual;
+            }
+        }
+
+        // rampa
+        if ((distanciaE <= perto) && (distanciaD <= perto)) {
+            if (!ficouPerto) {
+                ficouPerto = 1;
+                ultimoCheckRampa = tempoAtual;
+            }
+            if (ficouPerto && ((tempoAtual - ultimoCheckRampa) > tempoRampa)) {
+                RotateMotor(motorRampa, -100, movimentoRampa);
+                RotateMotor(motorRampa, 100, movimentoRampa);
+                OnRev(motorRampa, forcaRampa);
+            }
+        } else {
+            ficouPerto = 0;
+        }
+    }
+
+#else
+    // unsigned long CurrentTick()
+    while (1) {
+        OnFwd(OUT_AB, 75);
+        Wait(1000);
+        Off(OUT_AB);
+        Wait(1000);
+        RotateMotor(OUT_AB, 100, 3600);
+        Wait(1000);
+        RotateMotor(OUT_AB, 100, 0);
+        Wait(1000);
+    }
+#endif
+}
+
+void girarDireita(char _vel) {
+    OnRev(motorDireita, _vel);
+    OnFwd(motorEsquerda, _vel);
+}
+
+void girarEsquerda(char _vel) {
+    OnRev(motorEsquerda, _vel);
+    OnFwd(motorDireita, _vel);
+}
