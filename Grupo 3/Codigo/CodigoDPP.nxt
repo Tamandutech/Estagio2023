@@ -28,6 +28,7 @@ void GirarEixoDireita(int pot);
 void GirarEixoEsquerda(int pot);
 bool RandBool();
 void ResetVar();
+void AtackVar();
 void UpdateTempo();
 
 int tempo_ataque = 0;
@@ -44,20 +45,19 @@ task main() {
         }
         // Contra Ataque Giro Frente
         else if(sensorSomF < perto && tempo_ataque >= ms2s(timeAtaqueF) && !contra_ataque) {
-            tempo_ataque = 0;
-            contra_ataque = true;
+            AtackVar();
             for (int i = 0; i < 2000; i += time_wait) {
                 OnRev(motorDireita,100);
                 OnFwd(motorEsquerda,25);
                 Wait(time_wait);
                 if(sensorLuzT > claro) {
-                    for (int i = 0; i < 800; i += time_wait) {
-                        GirarEixoDireita(90);
+                    for (int i = 0; i < 600; i += time_wait) {
+                        GirarEixoEsquerda(90);
                         Wait(time_wait);
                         if(sensorLuzF > claro) {
                             RunT(100);
-                            Wait(800);  
-                            GirarEixoDireita(90);
+                            Wait(800);
+                            GirarEixoEsquerda(90);
                             Wait(800);
                             break;
                         }
@@ -82,20 +82,19 @@ task main() {
         }
         // Contra Ataque Giro Atras
         else if(sensorSomT < perto && tempo_ataque >= ms2s(timeAtaqueT) && !contra_ataque) {
-            tempo_ataque = 0;
-            contra_ataque = true;
+            AtackVar();
             for (int i = 0; i < 2000; i += time_wait) {
                 OnFwd(motorDireita,25);
                 OnRev(motorEsquerda,100);
                 Wait(time_wait);
                 if(sensorLuzF > claro) {
-                    for (int i = 0; i < 800; i += time_wait) {
-                        GirarEixoEsquerda(90);
+                    for (int i = 0; i < 600; i += time_wait) {
+                        GirarEixoDireita(90);
                         Wait(time_wait);
                         if(sensorLuzT > claro) {
                             RunF(100);
                             Wait(800);  
-                            GirarEixoEsquerda(90);
+                            GirarEixoDireita(90);
                             Wait(800);
                             break;
                         }
@@ -136,7 +135,7 @@ void Init() {
     SetSensorLowspeed(IN_2);
     SetSensorLowspeed(IN_3);
     SetSensorLowspeed(IN_4);
-    Wait(4700); 
+    Wait(4700);
 }
 
 void RunF(int pot) {
@@ -168,6 +167,11 @@ bool RandBool() {
 void ResetVar() {
     tempo_ataque = 0;
     contra_ataque = false;
+}
+
+void AtackVar(){
+    tempo_ataque = 0;
+    contra_ataque = true;
 }
 
 void UpdateTempo(){
