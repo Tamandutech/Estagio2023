@@ -1,0 +1,67 @@
+// Grupo 3
+#define perto           80          // cm
+#define time_wait       40          // ms
+#define ms2s(x)         1000*x      // ms -> s
+#define claro           60          // %
+#define timeF           10          // s
+#define timeT           6           // s
+#define motorDireita    OUT_A
+#define motorEsquerda   OUT_C
+#define sensorSomF      SensorUS(IN_1)
+#define sensorSomT      SensorUS(IN_2)
+#define sensorLuzF      SensorUS(IN_3)
+#define sensorLuzT      SensorUS(IN_4)
+
+//
+// Direita AB 3
+// Esquerda C 1
+//
+
+task main() {
+    SetSensorLowspeed(IN_1);
+    SetSensorLowspeed(IN_2);
+    SetSensorLowspeed(IN_3);
+    SetSensorLowspeed(IN_4);
+    Wait(4700);
+    int tempo_ataque = 0;
+    bool contra_ataque = false;
+    while (true) {
+        // Ataque Frente
+        if (sensorSomF < perto && tempo_ataque < ms2s(timeF))
+        {
+            OnRev(motorDireita,100);
+            OnRev(motorEsquerda,100);
+            Wait(time_wait);
+            tempo_ataque += time_wait;
+        }
+        // Contra Ataque Frente
+        else if(sensorSomF < perto && tempo_ataque >= ms2s(timeF)){
+            OnRev(motorDireita,100);
+            OnFwd(motorEsquerda,25);
+            Wait(2000);
+            tempo_ataque = 0;
+        }
+        // Ataque Atrás
+        else if (sensorSomT < perto && tempo_ataque < ms2s(timeT))
+        {
+            OnFwd(motorDireita,100);
+            OnFwd(motorEsquerda,100);
+            Wait(time_wait);
+            tempo_ataque += time_wait;
+        }
+        // Contra Ataque Atrás
+        else if(sensorSomT < perto && tempo_ataque >= ms2s(timeT)){
+            OnRev(motorDireita,100);
+            OnFwd(motorEsquerda,25);
+            Wait(2000);
+            tempo_ataque = 0;
+        }
+        else
+        {
+            OnFwd(motorDireita,75);
+            OnRev(motorEsquerda,75);
+            Wait(time_wait);
+            tempo_ataque = 0;
+        }
+    }
+}
