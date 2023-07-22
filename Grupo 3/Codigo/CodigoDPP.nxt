@@ -5,9 +5,9 @@
 // Esquerda C   1
 //
 
-#define perto               80          // cm
-#define time_wait           40          // ms
-#define ms2s(x)             1000*x      // ms -> s
+#define perto               40          // cm
+#define time_wait           20          // ms
+#define s2ms(x)             1000*x      // ms -> s
 #define claro               60          // %
 #define timeAtaqueF         10          // s
 #define timeAtaqueT         6           // s
@@ -16,17 +16,16 @@
 
 #define motorDireita        OUT_A
 #define motorEsquerda       OUT_C
-#define sensorSomF          SensorUS(IN_1)
-#define sensorSomT          SensorUS(IN_2)
-#define sensorLuzF          SensorUS(IN_3)
-#define sensorLuzT          SensorUS(IN_4)
+#define sensorSomF          SensorUS(IN_4)
+#define sensorSomT          SensorUS(IN_3)
+#define sensorLuzF          SensorUS(IN_1)
+#define sensorLuzT          SensorUS(IN_2)
 
 void Init();
 void RunF(int pot);
 void RunT(int pot);
 void GirarEixoDireita(int pot);
 void GirarEixoEsquerda(int pot);
-bool RandBool();
 void ResetVar();
 void AtackVar();
 void UpdateTempo();
@@ -39,16 +38,16 @@ task main() {
     while(true) {
         /* ATRAS */
         // Ataque Frente
-        if (sensorSomF < perto && tempo_ataque < ms2s(timeAtaqueF) && !contra_ataque) {
+        if (sensorSomF < perto && tempo_ataque < s2ms(timeAtaqueF) && !contra_ataque) {
             UpdateTempo();
             RunF(100);
         }
         // Contra Ataque Giro Frente
-        else if(sensorSomF < perto && tempo_ataque >= ms2s(timeAtaqueF) && !contra_ataque) {
+        else if(sensorSomF < perto && tempo_ataque >= s2ms(timeAtaqueF) && !contra_ataque) {
             AtackVar();
             for (int i = 0; i < 2000; i += time_wait) {
-                OnRev(motorDireita,100);
-                OnFwd(motorEsquerda,25);
+                OnRev(motorDireita,25);
+                OnFwd(motorEsquerda,100);
                 Wait(time_wait);
                 if(sensorLuzT > claro) {
                     for (int i = 0; i < 600; i += time_wait) {
@@ -69,19 +68,19 @@ task main() {
             }
         }
         // Contra Ataque Frente
-        else if(sensorSomF < perto && tempo_ataque < ms2s(timeContraAtaqueF) && contra_ataque) {
+        else if(sensorSomF < perto && tempo_ataque < s2ms(timeContraAtaqueF) && contra_ataque) {
             UpdateTempo();
             RunF(100);
         }
 
         /* ATRAS */
         // Ataque Atras
-        else if (sensorSomT < perto && tempo_ataque < ms2s(timeAtaqueT) && !contra_ataque) {
+        else if (sensorSomT < perto && tempo_ataque < s2ms(timeAtaqueT) && !contra_ataque) {
             UpdateTempo();
             RunT(100);
         }
         // Contra Ataque Giro Atras
-        else if(sensorSomT < perto && tempo_ataque >= ms2s(timeAtaqueT) && !contra_ataque) {
+        else if(sensorSomT < perto && tempo_ataque >= s2ms(timeAtaqueT) && !contra_ataque) {
             AtackVar();
             for (int i = 0; i < 2000; i += time_wait) {
                 OnFwd(motorDireita,25);
@@ -106,7 +105,7 @@ task main() {
             }
         }
         // Contra Ataque Atras
-        else if(sensorSomT < perto && tempo_ataque < ms2s(timeContraAtaqueT) && contra_ataque) {
+        else if(sensorSomT < perto && tempo_ataque < s2ms(timeContraAtaqueT) && contra_ataque) {
             UpdateTempo();
             RunT(100);
         }
@@ -114,17 +113,8 @@ task main() {
         /* NADA */
         // Achou NADA!!!
         else {
-            int rand = RandBool();
-            if(rand == 0) {
-                OnFwd(motorDireita,75);
-                OnRev(motorEsquerda,75);
-                Wait(time_wait);
-            }
-            else {
-                OnRev(motorDireita,75);
-                OnFwd(motorEsquerda,75);
-                Wait(time_wait);
-            }
+            GirarEixoDireita(50);
+            Wait(time_wait);
             ResetVar();
         }
     }
@@ -135,33 +125,29 @@ void Init() {
     SetSensorLowspeed(IN_2);
     SetSensorLowspeed(IN_3);
     SetSensorLowspeed(IN_4);
-    Wait(4700);
+    Wait(5000);
 }
 
 void RunF(int pot) {
-    OnRev(motorDireita,100);
-    OnRev(motorEsquerda,100);
+    OnRev(motorDireita,pot);
+    OnRev(motorEsquerda,pot);
     Wait(time_wait);
 }
 
 void RunT(int pot) {
-    OnFwd(motorDireita,100);
-    OnFwd(motorEsquerda,100);
+    OnFwd(motorDireita,pot);
+    OnFwd(motorEsquerda,pot);
     Wait(time_wait);
 }
 
 void GirarEixoDireita(int pot){
-    OnFwd(motorDireita,90);
-    OnRev(motorEsquerda,90);
+    OnFwd(motorDireita,pot);
+    OnRev(motorEsquerda,pot);
 }
 
 void GirarEixoEsquerda(int pot){
-    OnRev(motorDireita,90);
-    OnFwd(motorEsquerda,90);
-}
-
-bool RandBool() {
-    return GetRandom(2);
+    OnRev(motorDireita,pot);
+    OnFwd(motorEsquerda,pot);
 }
 
 void ResetVar() {
