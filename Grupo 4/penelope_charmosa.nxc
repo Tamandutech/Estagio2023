@@ -7,16 +7,16 @@
 #define sensorE IN_4
 #define sensorD IN_3
 
-#define perto 18      // distancia em cm para ativar rampa
-#define longe 40      // distancia maxima para busca rapida, valores maiores que o definido aqui farão com que o robo busque lentamente
-#define velBusca -20  // velocidade para busca quando longe
+#define perto 18  // distancia em cm para ativar rampa
+#define longe 40  // distancia maxima para busca rapida, valores maiores que o definido aqui farão com que o robo busque lentamente
+#define velBusca -20
 #define velCurva -50
 #define velReta -100
 #define tempoBusca 1900   // tempo em ms para trocar de lado de busca quando longe
 #define tempoRampa 2000   // tempo em ms que o robo deve ficar perto para ativar a rampa
 #define rampaAbaixada 90  // graus que a rampa movimenta no inicio
 #define movimentoRampa 30
-#define forcaRampa 25  // força constante para manter a rampa abaixada
+#define forcaRampa 5  // força constante para manter a rampa abaixada
 
 #define proximoDe(valor, valor_referencia, margem) (abs((valor) - (valor_referencia)) <= (margem))
 #define moverReto(velocidade) OnFwd(motores, velocidade)
@@ -37,9 +37,26 @@ task main() {
 
 #if debug == 0
 
+    ClearScreen();
+    Wait(1000);
+    TextOut(0, LCD_LINE1, "Escolha o lado");
+    for (;;) {
+        if (ButtonPressed(BTNRIGHT, 0)) {
+            ladoBusca = 1;
+            break;
+        }
+        if (ButtonPressed(BTNLEFT, 0)) {
+            ladoBusca = 0;
+            break;
+        }
+        if (ButtonPressed(BTNCENTER, 0)) {
+            Wait(4700);
+            moverReto(100);
+            OnFwd(motorRampa, forcaRampa);
+        }
+    }
     Wait(4700);
     RotateMotor(motorRampa, 100, rampaAbaixada);
-    OnFwd(motorRampa, forcaRampa);
 
     for (;;) {
         distanciaE = SensorUS(sensorE);
@@ -77,24 +94,33 @@ task main() {
             if (ficouPerto && ((tempoAtual - ultimoCheckRampa) > tempoRampa)) {
                 RotateMotor(motorRampa, -100, movimentoRampa);
                 RotateMotor(motorRampa, 100, movimentoRampa);
-                OnRev(motorRampa, forcaRampa);
             }
         } else {
             ficouPerto = 0;
         }
+        OnFwd(motorRampa, forcaRampa);
     }
 
 #else
-    // unsigned long CurrentTick()
-    while (1) {
-        OnFwd(OUT_AB, 75);
+    /* unsigned long CurrentTick()
+    #define BTNRIGHT BTN2
+    #define BTNLEFT BTN3
+    OnFwd(OUT_AB, 75);
         Wait(1000);
         Off(OUT_AB);
         Wait(1000);
         RotateMotor(OUT_AB, 100, 3600);
         Wait(1000);
         RotateMotor(OUT_AB, 100, 0);
-        Wait(1000);
+        Wait(1000);*/
+
+    while (1) {
+        if (ButtonPressed(BTNRIGHT, 0)) {
+            girarDireita(velCurva);
+        }
+        if (ButtonPressed(BTNLEFT, 0)) {
+            girarEsquerda(velCurva);
+        }
     }
 #endif
 }
