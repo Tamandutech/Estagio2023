@@ -1,0 +1,209 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Definicao das portas dos componentes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*========================================================================================
+  Define as saidas dos motores
+  
+  A - Direita
+  B - Esquerda
+========================================================================================*/
+#define MotDir OUT_A
+#define MotEsq OUT_B
+
+
+/*========================================================================================
+  Define as entradas dos sensores
+  Ultrassonicos nas portas 1 e 2
+
+  1 - Direita
+  2 - Esquerda
+========================================================================================*/
+#define sensorD IN_1
+#define sensorE IN_2
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Definicao de constantes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#define perto 25 // Quanto eh a distancia considerada perto
+#define fwdSpeed 100  // Velocidade padrao para andar para frente
+#define startSpeed -100 // Velocidade de inicio do codigo
+#define startWait 5200 // Tempo em milisegindos que ele espera no comeco da execucao
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Definicao de variaveis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+float Ultra[2]; // Valores dos sensores ultrassonicos, onde [0] eh a direita e [1] eh a esquerda
+int UltimoVisto; // Lado onde o robo adversario foi visto por ultimo, com -1 sendo a
+                  // direita e 1 sendo a esquerda
+                  // esse numero basicamente vai servir como um multiplicador pras velocidades, sendo q o 
+                  // sinal altera o lado que ele gira. Assim nn precisamos botar mais logica pra decidir
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Cabecalho de funcoes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*========================================================================================
+  Funcao Start:
+     Entradas:
+        void
+
+     Saidas:
+        void
+
+    Acoes:
+        Realiza as acoes iniciais do codigo:
+                Inicializa as portas dos sensores
+                Espera 5200ms (mais de 5s para garantir)
+                Da o tranco para tras para abaixar a rampa
+=======================================================================================*/
+void Start();
+
+/*========================================================================================
+  Funcao Move:
+     Entradas:
+        SpeedDir <==> Velocidade desejada na direita, com valor padrao 0
+        SpeedEsq <==> Velocidade desejada na esquerda, com valor padrao 0
+        esp <==> Tempo que vai esperar na velocidade configurada
+        stp <==> condicao se vai parar apos esse tempo ou nao
+
+     Saidas:
+        void
+
+    Acoes:
+       Seta a velocidade de cada motor para as selecionadas por
+========================================================================================*/
+void Move(int SpeedDir = 0, int SpeedEsq = 0, int esp = 30, bool stp = false);
+
+/*========================================================================================
+  Funcao Onde:
+     Entradas:
+        void
+
+     Saidas:
+        Numero correspondente a direcao que o robo adversario esta:
+           1- Frente
+           2- Direita
+           3- Esquerda
+           4- Não na frente, mas temos o lado que foi visto da ultima vez
+           5- Nenhum (girar pra um lado)
+
+    Acoes:
+        Utiliza as leituras dos sensores ultrassonicos para decidir onde o robo adversario esta
+=======================================================================================*/
+int Onde();
+
+/*========================================================================================
+  Funcao UltRead:
+     Entradas:
+        void
+
+     Saidas:
+        void
+
+    Acoes:
+        Realiza a leitura dos sensores ultrassonicos e atualiza o array de valores
+=======================================================================================*/
+void UltRead();
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Tasks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+task main(){
+  Start();
+
+  int Auxiliar = Onde();
+
+  while(true){
+
+    Auxiliar = Onde();
+    
+    switch (Auxiliar) {
+      case 1:
+        Move(fwdSpeed, fwdSpeed); // Anda para a frente
+      break;
+      
+      case 2:
+        Move(fwdSpeed, -1 * fwdSpeed); // Gira para a direita
+      break;
+
+      case 3:
+        Move(-1 * fwdSpeed, fwdSpeed); // Gira para a esquerda
+      break;
+
+      case 4:
+        Move(UltimoVisto * fwdSpeed, UltimoVisto * (-fwdSpeed)); // Gira para o lado que viu por ultimo o adversario
+      break;
+
+      case 5:
+        Move(fwdSpeed, -fwdSpeed); // Gira para a esquerda soh pq sim
+      break;
+
+      default:
+        
+      break;
+    }
+    
+    Wait(40);
+  }
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Funcoes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+void Move(int SpeedDir = 0, int SpeedEsq = 0, int esp = 30, bool stp = false){
+  OnRev(MotDir, SpeedDir); // Seta as velocidades dos motores
+  OnRev(MotEsq, SpeedEsq);
+  
+  Wait(esp); // Espera o tempo determinado
+  
+  if (stp) { // Caso stp == True, ele para os motores apos andar
+    OnRev(MotDir, 0);
+    OnRev(MotEsq, 0);
+    Wait(30);
+  }
+}
+
+void Start(){
+  SetSensorLowspeed(sensorD); // Inicialiar as portas dos sensores adequadamente
+  SetSensorLowspeed(sensorE);
+     
+  Wait(startWait); // Aguarda antes de comecar
+     
+  Move(startSpeed, startSpeed, 200, true); // Tranco para tras para abaixar a rampa
+}
+
+int Onde(){
+  int ans = -1; // Variavel de retorno da funcao. -1 significa q algo errado aconteceu
+
+  UltRead(); // Atualiza os valores armazenados dos ultrassonicos
+
+  if (Ultra[0] <= perto && Ultra[1] <= perto) { // Frente
+    ans = 1; 
+  }
+
+  else if (Ultra[0] < perto && Ultra[1] > perto) { // Direita
+    ans = 2;
+    UltimoVisto = -1; // Caso seja necessario usar depois, coloca o ultimo visto como -1(=direita)
+  }
+
+  else if (Ultra[0] > perto && Ultra[1] < perto) {// Esquerda
+    ans = 3;
+    UltimoVisto = 1; // Caso seja necessario usar depois, coloca o ultimo visto como 1(=esquerda)
+  }
+
+  else if (Ultra[0] > perto && Ultra[1] > perto) {
+    if (UltimoVisto == 0) ans = 5; // Nao sabemos onde o outro robo esta
+    else ans = 4; // Sabemos o lado que o outro robo provavelmente esta
+  }
+
+  return ans;
+}
+
+void UltRead(){
+  Ultra[0] = SensorUS(sensorD);
+  Ultra[1] = SensorUS(sensorE);
+}
