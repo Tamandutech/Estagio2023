@@ -83,8 +83,8 @@ task main() {
         else if(sensorSomT < perto && tempo_ataque >= s2ms(timeAtaqueT) && !contra_ataque) {
             AtackVar();
             for (int i = 0; i < 2000; i += time_wait) {
-                OnFwd(motorDireita,25);
-                OnRev(motorEsquerda,100);
+                OnRev(motorDireita,100);
+                OnFwd(motorEsquerda,25);
                 Wait(time_wait);
                 if(sensorLuzF > claro) {
                     for (int i = 0; i < 600; i += time_wait) {
