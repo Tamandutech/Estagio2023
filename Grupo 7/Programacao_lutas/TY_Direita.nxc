@@ -1,0 +1,88 @@
+//Programa para quando o tech Yokozuna estiver posicionado mais para a esquerda e precisar virar para direita quando nao achar oponente
+
+
+#define perto 40 //cm
+#define motoresRoda OUT_AB
+#define motorDireita OUT_B
+#define motorEsquerda OUT_A
+#define sensorD SensorUS(IN_1)
+#define sensorE SensorUS(IN_4)
+#define motorRampa OUT_C
+#define pot_re 100                  // Potencia da roda que ir ao contrário durante o giro
+#define dist 20
+
+
+task rampa()
+{
+   OnFwd(motorRampa,100);
+   Wait(500);
+   Off(motorRampa);
+}
+
+
+task movimento()
+{
+   Wait(250);                          // tempo de espera necessario para a rampa sair da frente dos sensores
+   OnFwd(motorRampa,5);                // linha responsável por manter a rampa tocando o chao durante toda a luta
+
+   while (true)
+   {
+      if (sensorE < perto && sensorD < perto)            //Cenario 1 - adversario em frente e tudo para frente
+      {
+         OnRevReg(motoresRoda,100,OUT_REGMODE_SPEED);    // Modo em que as rodas ganham certa potencia, a fim de manter velocidade constante
+         Wait(40);
+      }
+
+      else if ( sensorE < perto && sensorD > perto)    // Cenario 2 - Somente um sensor vendo adversario - girar p/ esquerda ate achar adversario
+      {
+         if (sensorE < dist)
+         {                                          //  Ir tudo para frente, caso o adversario esteja bem proximo e visivel em apenas um sensor
+            OnRev(motoresRoda,100);
+            Wait(40);
+         }
+
+         else
+         {                                        //    girar p/ esquerda ate encontrar adversario enquanto ele esta mais longe do que dist
+            OnFwd(motorEsquerda,pot_re);
+            OnRev(motorDireita,100);
+            Wait(10);
+         }
+      }
+
+      else if ( sensorE > perto && sensorD < perto)          // Cenario 2  - girar p/ direita ate achar adversario
+      {
+         if (sensorD < dist)
+         {                                          // Ir tudo para frente, caso o adversario esteja bem proximo e visivel em apenas um sensor
+            OnRev(motoresRoda,100);
+            Wait(40);
+         }
+
+         else
+         {                                            //  girar p/ direita ate encontrar adversario enquanto ele esta mais longe do que dist
+            OnFwd(motorDireita,pot_re);
+            OnRev(motorEsquerda,100);
+            Wait(10);
+         }
+      }
+
+
+      else                                         //cenario 3 - girar p/ direita ate achar adversario
+      {
+         OnFwd(motorDireita,pot_re);
+         OnRev(motorEsquerda,100);
+         Wait(40);
+      }
+   }
+}
+
+
+task main() 
+{
+   OnRev(motorRampa,70);               // Manter rampa elevada para inicio do combate
+   Wait(5100);
+   SetSensorLowspeed(IN_1);
+   SetSensorLowspeed(IN_4);
+   Precedes(rampa, movimento);         //Separacao entre movimento da rampa e movimento do robo 
+}
+
+

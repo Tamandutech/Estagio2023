@@ -1,0 +1,52 @@
+#define mot OUT_AB
+#define pwr 75
+#define move_time 500
+#define turn_time 1000
+#define graus 90
+
+task main()
+	{
+repeat(4) //repeat(4) para fazer um quadrado, modo com uma das rodas paradas
+	{
+	OnRev(mot, pwr);
+	Wait(move_time);
+	Off(OUT_A);
+	Wait(turn_time);
+	}
+	
+PlayToneEx(262,500,4,false);
+OnFwd(mot,pwr);
+Wait(500);
+
+repeat(4) //modo com uma das rodas em reverso
+	{
+	OnRev(mot,pwr);
+	Wait(move_time);
+	OnFwd(OUT_A,pwr);
+	Wait(turn_time);
+	}
+
+PlayToneEx(1397,1000,4,false);
+OnFwd(mot,pwr);
+Wait(500);
+
+repeat(4) //modo com rotatemotor
+	{
+	OnRev(mot,pwr);
+	Wait(move_time);
+	RotateMotor(mot,pwr, graus);
+	}
+
+PlayToneEx(3951,1000,4,true);
+OnFwd(mot,pwr);
+Wait(500);
+
+repeat(4) //modo com rotatemotor de uma unica roda
+	{
+	OnRev(mot,pwr);
+	Wait(move_time);
+	RotateMotor(OUT_A,pwr, graus);
+	}
+Coast(mot);
+	}
+

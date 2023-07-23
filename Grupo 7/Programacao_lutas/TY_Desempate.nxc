@@ -1,0 +1,9 @@
+task main()       // Programacao simples para ir para tras em caso de desempate
+{
+  OnRev(OUT_C,70);
+  Wait(5100);
+  while(true)
+    {
+      OnFwd(OUT_AB,100);
+    }
+}

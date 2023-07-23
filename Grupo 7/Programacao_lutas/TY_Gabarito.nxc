@@ -1,0 +1,7 @@
+task main()         // Codigo para passar por dentro do gabarito
+{
+    while(true)
+    {
+        OnRev(OUT_C,70);
+    }
+}

@@ -1,0 +1,6 @@
+task main() // Controle da rampa
+{
+    OnFwd(OUT_C,100);
+    Wait(500);
+    Off(OUT_C);
+}

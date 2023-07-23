@@ -1,0 +1,18 @@
+#define mot OUT_AB
+#define pwr 100
+#define move_time 3000
+
+task main () // Entendendo os movimentos do robo
+{
+	OnFwd(mot, pwr);
+	Wait(move_time);
+	OnRev(mot, pwr);
+	Wait(move_time);
+	Off(mot);
+	PlayToneEx(262,1000,4,false);
+	OnFwdReg(mot, pwr, OUT_REGMODE_SPEED);
+	Wait(move_time);
+	OnRevReg(mot, pwr, OUT_REGMODE_SYNC);
+	Coast(mot);
+}
+
