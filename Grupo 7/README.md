@@ -11,13 +11,10 @@ Membros da equipe:
 ## Robô - Tech Yokozuna (TY)
 
 <div align="center">
-
+<font size=3>
   <img src = "Fotos\Tech_Yokozuna.jpg" width = "300" title="Tech Yokozuna">  <img src="Fotos\modelo_TY.jpg" width="500" title="Modelo Tech Yokozuna">
-
-  <font size =3>
-  Tech Yokozuna!!!
-  </font>
-
+  <figcaption>Tech Yokozuna!!!</figcaption>  
+</font>
 </div>
 
 <br>
@@ -36,22 +33,26 @@ História por trás do nome: Yokozuna é o título dado ao sumotori (lutador de 
 <font size = 3>
 
 <img src = "Fotos\Foto_equipe7_Lego_Makers.jpg" width = "850" > 
-Membros da equipe e o Tech Yokozuna!
+<figcaption>Membros da equipe e o Tech Yokozuna!</figcaption>  
+
 
 <br>
 
-<img src = "Fotos\Primeira_luta.jpg" width = "800"> 
-Primeiro combate: Tech Yokozuna X Dollynho Prime Plus
+<img src = "Fotos\Primeira_luta.jpg" width = "800">
+<figcaption>Primeiro combate: Tech Yokozuna X Dollynho Prime Plus</figcaption>  
+
 
 <br>
 
 <img src = "Fotos\Primeiro_combate.jpg" width = "800">
-Primeiro combate: Equipe Lego Makers e Equipe Mentes Mecânicas
+<figcaption>Primeiro combate: Equipe Lego Makers e Equipe Mentes Mecânicas</figcaption> 
+
 
 <br>
 
 <img src = "Fotos\Segundo_combate.jpg" width = "800">
-Segundo combate: Equipe Lego Makers e Equipe Grupo de Dois
+<figcaption>Segundo combate: Equipe Lego Makers e Equipe Grupo de Dois</figcaption>
+
 
 </font>
 </div>
@@ -68,7 +69,8 @@ Obrigado por tudo e um grande abraço do grupo 7 - equipe Lego Makers!!!
 
 <div align="center">
 
-<img src = "Fotos\Foto_equipe7_Lego_Makers.jpg" width = "500" > 
-Membros da equipe e o Tech Yokozuna!
+<img src = "Fotos\Foto_equipe7_Lego_Makers.jpg" width = "500" >
+<figcaption>Membros da equipe e o Tech Yokozuna!</figcaption> 
+
 
 </div>
