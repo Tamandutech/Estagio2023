@@ -1,19 +1,28 @@
 # Estagio2023 - Lego Makers
 Repositório para o estágio do processo seletivo 2023
 
+Membros da equipe:
+- Brenno De Callis Vieira
+- Gabriel Rusisca Marques
+- Leandro de Jesus Mota Ferreira
+- Rebeca Macena Rezende
+
 ---
 ## Robô - Tech Yokozuna (TY)
 
 <div align="center">
 
-  <img src = "Tech_Yokozuna.jpg" width = "300" title="Tech Yokozuna">
-  <img src="modelo_TY.jpg" width="500" title="Modelo Tech Yokozuna"> 
-  
-  ### Tech Yokozuna!!!
+  <img src = "Fotos\Tech_Yokozuna.jpg" width = "300" title="Tech Yokozuna">  <img src="Fotos\modelo_TY.jpg" width="500" title="Modelo Tech Yokozuna">
+
+  <font size =3>
+  Tech Yokozuna!!!
+  </font>
 
 </div>
 
-    História por trás do nome: Yokozuna é o título dado ao sumotori (lutador de sumô) que alcançou o grau mais alto do tradicional sumô japonês.
+<br>
+
+História por trás do nome: Yokozuna é o título dado ao sumotori (lutador de sumô) que alcançou o grau mais alto do tradicional sumô japonês.
 ### Estratégia de combate:
 - Início de combate: o Tech Yokozuna (TY) abaixa sua rampa, com exceção da rodada de desempate;
 - Cenário 1 - robô adversário sendo visto nos dois sensores superiores do TY - avanço com força total na tentativa de empurrar o oponente para fora do dojo;
@@ -24,18 +33,42 @@ Repositório para o estágio do processo seletivo 2023
 ---
 ## Trajetória durante a competição
 <div align="center">
+<font size = 3>
 
-<img src = "Foto_equipe7_Lego_Makers.jpg" width = "850" > 
+<img src = "Fotos\Foto_equipe7_Lego_Makers.jpg" width = "850" > 
 Membros da equipe e o Tech Yokozuna!
 
-<img src = "Primeira_luta.jpg" width = "800"> 
+<br>
+
+<img src = "Fotos\Primeira_luta.jpg" width = "800"> 
 Primeiro combate: Tech Yokozuna X Dollynho Prime Plus
 
-<img src = "Primeiro_combate.jpg" width = "800">
+<br>
+
+<img src = "Fotos\Primeiro_combate.jpg" width = "800">
 Primeiro combate: Equipe Lego Makers e Equipe Mentes Mecânicas
 
-<img src = "Segundo_combate.jpg" width = "800">
+<br>
+
+<img src = "Fotos\Segundo_combate.jpg" width = "800">
 Segundo combate: Equipe Lego Makers e Equipe Grupo de Dois
 
+</font>
 </div>
+<br>
 
+## Agradecimentos
+<font size =3>
+
+Obrigado Tamandutech e todos os seus integrantes por essa experiência incrível que foi o processo seletivo 2023.
+
+Aprendemos muito e com certeza encerramos essa jornada de forma melhor do que iniciamos.
+
+Obrigado por tudo e um grande abraço do grupo 7 - equipe Lego Makers!!!
+
+<div align="center">
+
+<img src = "Fotos\Foto_equipe7_Lego_Makers.jpg" width = "500" > 
+Membros da equipe e o Tech Yokozuna!
+
+</div>
