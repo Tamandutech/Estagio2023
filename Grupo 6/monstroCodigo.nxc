@@ -1,0 +1,51 @@
+//BILBO
+#define perto 35 //cm
+#define motorDireita OUT_A
+#define motorEsquerda OUT_B
+#define sensorDir SensorUS(IN_2)
+#define sensorEsq SensorUS(IN_1)
+
+//
+// Direita A 2
+// Esquerda B 1
+//
+
+task main()
+{
+  Wait(5000);
+  OnRev(motorDireita,100);
+  OnRev(motorEsquerda,100);
+  Wait(300);
+  OnRev(motorDireita,0);
+  OnRev(motorEsquerda,0);
+  Wait(100);
+  SetSensorLowspeed(sensorEsq);
+  SetSensorLowspeed(sensorDir);
+  
+  while (true) {
+    if (sensorEsq < perto && sensorDir < perto)
+    {
+      OnFwd(motorDireita,100);
+      OnFwd(motorEsquerda,100);
+      Wait(500);
+    }
+    else if (sensorEsq < perto && sensorDir > perto)
+    {
+      OnFwd(motorDireita,100);
+      OnRev(motorEsquerda,100);
+      Wait(50);
+    }
+    else if (sensorEsq > perto && sensorDir < perto)
+    {
+      OnRev(motorDireita,100);
+      OnFwd(motorEsquerda,100);
+      Wait(50);
+    }
+    else
+    {
+      OnRev(motorDireita,50);
+      OnFwd(motorEsquerda,50);
+      Wait(50);
+    }
+  }
+}
